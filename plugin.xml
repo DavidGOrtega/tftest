@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-TensorflowBridge" version="0.5.0">
+    <name>Production Ready TensorFlow Models for Cordova</name>
+    <description>Cordova/PhoneGap bridge with most used models optimized for mobile.</description>
+    <license>MIT</license>
+    <keywords>tensorflow, stylize, neural style transfer</keywords>
+
+    <js-module src="www/TFBridgeCordova.js" name="TFBridgeCordova">
+        <clobbers target="navigator.TFBridgeCordova" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="TFBridgeCordova">
+              <param name="android-package" value="com.neocolorapp.tensorflow.TFBridgeCordova" />
+            </feature>
+        </config-file>
+        
+        <resource-file src="assets" target="assets" />
+        
+        <source-file src="src/android/src" target-dir="src" />
+        <source-file src="src/android/libs" target-dir="libs" />
+    </platform>
+</plugin>
