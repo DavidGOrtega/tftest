@@ -34,25 +34,25 @@ public class TFBridgeCordova extends CordovaPlugin
         {
             try
             {
-                JSONArray image_arr = getJSONArray(0);
-                int img_width       = (int) args.getInteger(1);
-                int img_height      = (int) args.getInteger(2);
+                JSONArray image_arr = args.getJSONArray(0);
+                int img_width       = args.getInt(1);
+                int img_height      = args.getInt(2);
                 float[] img_data    = new float[ image_arr.length() ]; 
                 for (int i = 0; i < image_arr.length(); i++)
-                    img_data[i] = (float) image_arr.getFloat(i);
+                    img_data[i] = image_arr.getDouble(i).floatValue();
                 
-                JSONArray style_arr = getJSONArray(3);
+                JSONArray style_arr = args.getJSONArray(3);
                 float[] styles      = new float[ style_arr.length() ];   
                 for (int i = 0; i < style_arr.length(); i++)
-                    styles[i] = (float) style_arr.getFloat(i);
+                    styles[i] = style_arr.getDouble(i).floatValue();
                     
                 String[] logs;
                 
                 this.stylize(img_data, img_width, img_height, styles, logs);
                 
                 JSONObject output   = new JSONObject();
-                record.put( "result", img_data );
-                record.put( "logs", logs);
+                output.put("result", img_data);
+                output.put("logs", logs);
                 callbackContext.success(output);
                 
             }catch(Exception e)
@@ -74,7 +74,7 @@ public class TFBridgeCordova extends CordovaPlugin
     //https://arxiv.org/abs/1610.07629 A Learned Representation For Artistic Style
     public void stylize(float[] img_data, int img_width, int img_height, float[] styles, String[] logs)
     {
-        this.stylize(img_data, img_width, img_height, styles, "input", "style_num", "transformer/expand/conv3/conv/Sigmoid");
+        this.stylize(img_data, img_width, img_height, styles, logs, "input", "style_num", "transformer/expand/conv3/conv/Sigmoid");
     }
     
     public void stylize(float[] img_data, int img_width, int img_height, float[] styles, String[] logs, String input_node, String style_node, String output_node)
