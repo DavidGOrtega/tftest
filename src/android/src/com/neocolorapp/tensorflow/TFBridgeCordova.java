@@ -46,7 +46,7 @@ public class TFBridgeCordova extends CordovaPlugin
                 for (int i = 0; i < style_arr.length(); i++)
                     styles[i] = (float) style_arr.getDouble(i);
                     
-                String[] logs;
+                String[] logs       = null;
                 
                 this.stylize(img_data, img_width, img_height, styles, logs);
                 
