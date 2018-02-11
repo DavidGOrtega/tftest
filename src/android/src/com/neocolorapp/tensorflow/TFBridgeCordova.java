@@ -56,7 +56,8 @@ public class TFBridgeCordova extends CordovaPlugin
                 this.stylize(img_data, img_width, img_height, styles, logs);
                 
                 JSONObject output   = new JSONObject();
-                output.put("lennn", image_arr.length() );
+                output.put("len1", image_arr.length() );
+                output.put("len2", img_data.length );
                 output.put("result1", Arrays.toString(img_data) );
                 output.put("result", img_data);
                 output.put("logs", logs);
