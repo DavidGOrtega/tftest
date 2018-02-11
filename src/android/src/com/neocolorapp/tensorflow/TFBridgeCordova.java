@@ -45,9 +45,7 @@ public class TFBridgeCordova extends CordovaPlugin
                 img_data            = new float[ image_arr.length() ]; 
                 for (int i = 0; i < image_arr.length(); i++)
                     img_data[i] = (float) image_arr.getDouble(i);
-                
-                lennn = image_arr.length()
-                
+
                 JSONArray style_arr = args.getJSONArray(3);
                 styles      = new float[ style_arr.length() ];   
                 for (int i = 0; i < style_arr.length(); i++)
