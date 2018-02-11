@@ -60,7 +60,7 @@ public class TFBridgeCordova extends CordovaPlugin
                 output.put("result", img_data);
                 output.put("logs", logs);
                 
-                callbackContext.success( output.toString() );
+                callbackContext.success( output );
                 
             }catch(Exception e)
             {
@@ -69,7 +69,7 @@ public class TFBridgeCordova extends CordovaPlugin
                 output.put("img_data", img_data);
                 output.put("styles", styles);
                 
-                callbackContext.error( output.toString() );
+                callbackContext.error( output );
             }
             
             return true;
