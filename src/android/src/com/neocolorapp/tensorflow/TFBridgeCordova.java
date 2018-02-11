@@ -68,7 +68,7 @@ public class TFBridgeCordova extends CordovaPlugin
     
     public void load(String model)
     {
-        tfii = new TensorFlowInferenceInterface( getBaseContext().getAssets(), model );
+        tfii = new TensorFlowInferenceInterface( this.cordova.getActivity().getAssets(), model );
     }
     
     //https://arxiv.org/abs/1610.07629 A Learned Representation For Artistic Style
