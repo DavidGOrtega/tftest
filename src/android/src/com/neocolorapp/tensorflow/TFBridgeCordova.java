@@ -32,12 +32,15 @@ public class TFBridgeCordova extends CordovaPlugin
         
         }else if ( action.equals("stylize") ) 
         {
+            float[] img_data = null;
+            float[] styles = null;;
+            
             try
             {
                 JSONArray image_arr = args.getJSONArray(0);
                 int img_width       = args.getInt(1);
                 int img_height      = args.getInt(2);
-                float[] img_data    = new float[ image_arr.length() ]; 
+                img_data            = new float[ image_arr.length() ]; 
                 for (int i = 0; i < image_arr.length(); i++)
                     img_data[i] = (float) image_arr.getDouble(i);
                 
@@ -53,11 +56,17 @@ public class TFBridgeCordova extends CordovaPlugin
                 JSONObject output   = new JSONObject();
                 output.put("result", img_data);
                 output.put("logs", logs);
-                callbackContext.success(output);
+                
+                callbackContext.success( output.toString() );
                 
             }catch(Exception e)
             {
-                callbackContext.error( e.getMessage() );
+                JSONObject output   = new JSONObject();
+                output.put("error", e.getMessage());
+                output.put("img_data", img_data);
+                output.put("styles", styles);
+                
+                callbackContext.error( output.toString() );
             }
             
             return true;
