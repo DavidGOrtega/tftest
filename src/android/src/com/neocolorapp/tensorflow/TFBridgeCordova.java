@@ -9,6 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+
+import android.util.Base64;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import java.io.ByteArrayOutputStream;
+
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class TFBridgeCordova extends CordovaPlugin 
@@ -56,10 +63,8 @@ public class TFBridgeCordova extends CordovaPlugin
                 this.stylize(img_data, img_width, img_height, styles, logs);
                 
                 JSONObject output   = new JSONObject();
-                output.put("len1", image_arr.length() );
-                output.put("len2", img_data.length );
+                output.put("styles", Arrays.toString(styles) );
                 output.put("result1", Arrays.toString(img_data) );
-                output.put("result", img_data);
                 output.put("logs", logs);
                 
                 callbackContext.success( output );
@@ -74,6 +79,69 @@ public class TFBridgeCordova extends CordovaPlugin
                 callbackContext.error( output );
             }
             
+            return true;
+        
+        }else if ( action.equals("stylize_64") ) 
+        {       
+            try
+            {
+                private static final int NUM_STYLES     = 26;
+                private static final String INPUT_NODE  = "input";
+                private static final String STYLE_NODE  = "style_num";
+                private static final String OUTPUT_NODE = "transformer/expand/conv3/conv/Sigmoid";
+
+                float[] styleVals   = new float[NUM_STYLES];
+                for (int i = 0; i < NUM_STYLES; ++i) 
+                {
+                    styleVals[i] = 1.0f / NUM_STYLES;
+                }
+
+                byte[] bytes_in     = Base64.decode(args.getString(0), Base64.DEFAULT);
+                Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
+
+                float[] floatValues = new float[ bitmap.getWidth() * bitmap.getHeight() ];
+                int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
+
+                bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                for (int i = 0; i < intValues.length; ++i) 
+                {
+                    final int val           = intValues[i];
+                    floatValues[i * 3]      = ((val >> 16) & 0xFF) / 255.0f;
+                    floatValues[i * 3 + 1]  = ((val >> 8) & 0xFF) / 255.0f;
+                    floatValues[i * 3 + 2]  = (val & 0xFF) / 255.0f;
+                }
+
+                tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
+                tfii.feed(STYLE_NODE, styleVals, NUM_STYLES);
+                tfii.run(new String[] {OUTPUT_NODE}, true);
+                tfii.fetch(OUTPUT_NODE, floatValues);
+
+                for (int i = 0; i < intValues.length; ++i) 
+                {
+                  intValues[i] =
+                      0xFF000000
+                          | (((int) (floatValues[i * 3] * 255)) << 16)
+                          | (((int) (floatValues[i * 3 + 1] * 255)) << 8)
+                          | ((int) (floatValues[i * 3 + 2] * 255));
+                }
+
+                bitmap.setPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray    = byteArrayOutputStream .toByteArray();
+                String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                JSONObject output   = new JSONObject();
+                output.put("out", base64_out);
+                callbackContext.success( output );
+
+            }catch(Exception e)
+            {
+                callbackContext.error( e.getMessage() );
+            }
+
             return true;
         }
         
