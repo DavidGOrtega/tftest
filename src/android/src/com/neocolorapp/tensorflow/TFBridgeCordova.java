@@ -20,6 +20,12 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class TFBridgeCordova extends CordovaPlugin 
 {
+    
+    private static final int NUM_STYLES     = 26;
+                private static final String INPUT_NODE  = "input";
+                private static final String STYLE_NODE  = "style_num";
+                private static final String OUTPUT_NODE = "transformer/expand/conv3/conv/Sigmoid";
+                
     private TensorFlowInferenceInterface tfii;
 
     @Override
@@ -85,11 +91,6 @@ public class TFBridgeCordova extends CordovaPlugin
         {       
             try
             {
-                private static final int NUM_STYLES     = 26;
-                private static final String INPUT_NODE  = "input";
-                private static final String STYLE_NODE  = "style_num";
-                private static final String OUTPUT_NODE = "transformer/expand/conv3/conv/Sigmoid";
-
                 float[] styleVals   = new float[NUM_STYLES];
                 for (int i = 0; i < NUM_STYLES; ++i) 
                 {
