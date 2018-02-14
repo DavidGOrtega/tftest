@@ -31,8 +31,10 @@ public class TFBridgeCordova extends CordovaPlugin
     private TensorFlowInferenceInterface tfii;
 
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException 
+    public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
     {
+        
+        final String act = action;
         if ( action.equals("load") || action.equals("stylize") || action.equals("stylize_64") || action.equals("throw") || action.equals("throw2")  ) 
         {
                     
@@ -40,7 +42,7 @@ public class TFBridgeCordova extends CordovaPlugin
         {
             public void run() 
             {
-                if ( action.equals("load") ) 
+                if ( act.equals("load") ) 
                 {
                     try
                     {
@@ -52,7 +54,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( e.getMessage() );
                     }
                 
-                }else if ( action.equals("stylize") ) 
+                }else if ( act.equals("stylize") ) 
                 {
                     try
                     {
@@ -88,7 +90,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( output );
                     }
                 
-                }else if ( action.equals("stylize_64") ) 
+                }else if ( act.equals("stylize_64") ) 
                 {       
                     try
                     {
@@ -147,9 +149,12 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( errors.toString() );
                     }
                 
-                }else if ( action.equals("throw") ) 
+                }else if ( act.equals("throw") ) 
                 {
-                    throw new JSONException("mother fucker");
+                    float number1 = 1;
+                    float number2 = 0;
+                    
+                    float number3 = number1 / number2;
                 
                 }else if ( action.equals("throw2") ) 
                 {
