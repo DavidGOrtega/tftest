@@ -71,7 +71,12 @@ public class TFBridgeCordova extends CordovaPlugin
                             
                         String[] logs       = null;
                         
-                        stylize(img_data, img_width, img_height, styles, logs);
+                        //stylize(img_data, img_width, img_height, styles, logs);
+
+                        tfii.feed( "input", img_data, 1, img_width, img_height, 3 );
+                        tfii.feed( "style_num", styles, styles.length );
+                        tfii.run( new String[]{"transformer/expand/conv3/conv/Sigmoid"}, true );              // Execute the output node's dependency sub-graph.
+                        tfii.fetch("transformer/expand/conv3/conv/Sigmoid", img_data);                        // Copy the data from TensorFlow back into our array.
                         
                         JSONObject output   = new JSONObject();
                         output.put("success", true);
