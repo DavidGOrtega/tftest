@@ -31,18 +31,16 @@ public class TFBridgeCordova extends CordovaPlugin
     private TensorFlowInferenceInterface tfii;
 
     @Override
-    public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
+    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
     {
-        
-        final String act = action;
         if ( action.equals("load") || action.equals("stylize") || action.equals("stylize_64") || action.equals("throw") || action.equals("throw2")  ) 
         {
                     
-        cordova.getActivity().runOnUiThread(new Runnable() 
+        cordova.getThreadPool().execute(new Runnable() {
         {
             public void run() 
             {
-                if ( act.equals("load") ) 
+                if ( action.equals("load") ) 
                 {
                     try
                     {
@@ -54,7 +52,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( e.getMessage() );
                     }
                 
-                }else if ( act.equals("stylize") ) 
+                }else if ( action.equals("stylize") ) 
                 {
                     try
                     {
@@ -87,7 +85,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( e.getMessage() );
                     }
                 
-                }else if ( act.equals("stylize_64") ) 
+                }else if ( action.equals("stylize_64") ) 
                 {       
                     try
                     {
@@ -146,14 +144,17 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( errors.toString() );
                     }
                 
-                }else if ( act.equals("throw") ) 
+                }else if ( action.equals("throw") ) 
                 {
                     float number1 = 1;
                     float number2 = 0;
                     
                     float number3 = number1 / number2;
+                    
+                    int[] jj = new int[3];
+                    jj[4] = 23;
                 
-                }else if ( act.equals("throw2") ) 
+                }else if ( action.equals("throw2") ) 
                 {
                     try
                     {
