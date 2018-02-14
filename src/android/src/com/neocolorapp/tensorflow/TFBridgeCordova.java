@@ -36,7 +36,7 @@ public class TFBridgeCordova extends CordovaPlugin
         if ( action.equals("load") || action.equals("stylize") || action.equals("stylize_64") || action.equals("throw") || action.equals("throw2")  ) 
         {
                     
-        cordova.getThreadPool().execute(new Runnable() {
+        cordova.getThreadPool().execute(new Runnable()
         {
             public void run() 
             {
