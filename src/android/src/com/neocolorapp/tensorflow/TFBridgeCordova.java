@@ -140,7 +140,7 @@ public class TFBridgeCordova extends CordovaPlugin
 
             }catch(Exception e)
             {
-                callbackContext.error( e.getMessage() );
+                callbackContext.error( e.printStackTrace() );
             }
 
             return true;
