@@ -143,7 +143,7 @@ public class TFBridgeCordova extends CordovaPlugin
             }catch(Exception e)
             {
                 StringWriter errors = new StringWriter();
-                ex.printStackTrace( new PrintWriter(errors) );
+                e.printStackTrace( new PrintWriter(errors) );
                 callbackContext.error( errors.toString() );
             }
 
