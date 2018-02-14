@@ -33,125 +33,133 @@ public class TFBridgeCordova extends CordovaPlugin
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException 
     {
-        if ( action.equals("load") ) 
+        cordova.getActivity().runOnUiThread(new Runnable() 
         {
-            try
+            public void run() 
             {
-                this.load( args.getString(0) );
-                callbackContext.success("Model loaded successfully");
-                
-            }catch(Exception e)
-            {
-                callbackContext.error( e.getMessage() );
-            }
-            
-            return true;
-        
-        }else if ( action.equals("stylize") ) 
-        {
-            float[] img_data = null;
-            float[] styles = null;
-
-            try
-            {
-                JSONArray image_arr = args.getJSONArray(0);
-                int img_width       = args.getInt(1);
-                int img_height      = args.getInt(2);
-                img_data            = new float[ image_arr.length() ]; 
-                for (int i = 0; i < image_arr.length(); i++)
-                    img_data[i] = (float) image_arr.getDouble(i);
-
-                JSONArray style_arr = args.getJSONArray(3);
-                styles      = new float[ style_arr.length() ];   
-                for (int i = 0; i < style_arr.length(); i++)
-                    styles[i] = (float) style_arr.getDouble(i);
+                if ( action.equals("load") ) 
+                {
+                    try
+                    {
+                        this.load( args.getString(0) );
+                        callbackContext.success("Model loaded successfully");
+                        
+                    }catch(Exception e)
+                    {
+                        callbackContext.error( e.getMessage() );
+                    }
                     
-                String[] logs       = null;
+                    return true;
                 
-                this.stylize(img_data, img_width, img_height, styles, logs);
+                }else if ( action.equals("stylize") ) 
+                {
+                    try
+                    {
+                        JSONArray image_arr = args.getJSONArray(0);
+                        int img_width       = args.getInt(1);
+                        int img_height      = args.getInt(2);
+                        
+                        float[] img_data    = new float[ image_arr.length() ]; 
+                        for (int i = 0; i < image_arr.length(); i++)
+                            img_data[i] = (float) image_arr.getDouble(i);
+
+                        JSONArray style_arr = args.getJSONArray(3);
+                        float[] styles      = new float[ style_arr.length() ];   
+                        for (int i = 0; i < style_arr.length(); i++)
+                            styles[i] = (float) style_arr.getDouble(i);
+                            
+                        String[] logs       = null;
+                        
+                        this.stylize(img_data, img_width, img_height, styles, logs);
+                        
+                        JSONObject output   = new JSONObject();
+                        output.put("styles", Arrays.toString(styles) );
+                        output.put("result1", Arrays.toString(img_data) );
+                        output.put("logs", logs);
+                        
+                        callbackContext.success( output );
+                        
+                    }catch(Exception e)
+                    {
+                        JSONObject output   = new JSONObject();
+                        output.put("error", e.getMessage());
+                        output.put("img_data", img_data);
+                        output.put("styles", styles);
+                        
+                        callbackContext.error( output );
+                    }
+                    
+                    return true;
                 
-                JSONObject output   = new JSONObject();
-                output.put("styles", Arrays.toString(styles) );
-                output.put("result1", Arrays.toString(img_data) );
-                output.put("logs", logs);
+                }else if ( action.equals("stylize_64") ) 
+                {       
+                    try
+                    {
+                        float[] styleVals   = new float[NUM_STYLES];
+                        for (int i = 0; i < NUM_STYLES; ++i) 
+                        {
+                            styleVals[i] = 1.0f / NUM_STYLES;
+                        }
+
+                        byte[] bytes_in     = Base64.decode(args.getString(0), Base64.DEFAULT);
+                        Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
+
+                        float[] floatValues = new float[ bitmap.getWidth() * bitmap.getHeight() * 3 ];
+                        int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
+
+                        Bitmap bitmap2      = bitmap.copy( bitmap.getConfig(), true );
+                        bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                        for (int i = 0; i < intValues.length; ++i) 
+                        {
+                            final int val           = intValues[i];
+                            floatValues[i * 3]      = ((val >> 16) & 0xFF) / 255.0f;
+                            floatValues[i * 3 + 1]  = ((val >> 8) & 0xFF) / 255.0f;
+                            floatValues[i * 3 + 2]  = (val & 0xFF) / 255.0f;
+                        }
+
+                        tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
+                        tfii.feed(STYLE_NODE, styleVals, NUM_STYLES);
+                        tfii.run(new String[] {OUTPUT_NODE}, true);
+                        tfii.fetch(OUTPUT_NODE, floatValues);
+
+                        for (int i = 0; i < intValues.length; ++i) 
+                        {
+                          intValues[i] =
+                              0xFF000000
+                                  | (((int) (floatValues[i * 3] * 255)) << 16)
+                                  | (((int) (floatValues[i * 3 + 1] * 255)) << 8)
+                                  | ((int) (floatValues[i * 3 + 2] * 255));
+                        }
+
+                        bitmap2.setPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+                        bitmap2.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray    = byteArrayOutputStream .toByteArray();
+                        String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                        JSONObject output   = new JSONObject();
+                        output.put("out", base64_out);
+                        callbackContext.success( output );
+
+                    }catch(Exception e)
+                    {
+                        StringWriter errors = new StringWriter();
+                        e.printStackTrace( new PrintWriter(errors) );
+                        callbackContext.error( errors.toString() );
+                    }
+
+                    return true;
                 
-                callbackContext.success( output );
+                }if ( action.equals("throw") ) 
+                {
+                    throw new JSONException("mother fucker");
+                }
                 
-            }catch(Exception e)
-            {
-                JSONObject output   = new JSONObject();
-                output.put("error", e.getMessage());
-                output.put("img_data", img_data);
-                output.put("styles", styles);
-                
-                callbackContext.error( output );
+                return false;
             }
-            
-            return true;
-        
-        }else if ( action.equals("stylize_64") ) 
-        {       
-            try
-            {
-                float[] styleVals   = new float[NUM_STYLES];
-                for (int i = 0; i < NUM_STYLES; ++i) 
-                {
-                    styleVals[i] = 1.0f / NUM_STYLES;
-                }
-
-                byte[] bytes_in     = Base64.decode(args.getString(0), Base64.DEFAULT);
-                Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
-
-                float[] floatValues = new float[ bitmap.getWidth() * bitmap.getHeight() * 3 ];
-                int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
-
-                Bitmap bitmap2      = bitmap.copy( bitmap.getConfig(), true );
-                bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-                for (int i = 0; i < intValues.length; ++i) 
-                {
-                    final int val           = intValues[i];
-                    floatValues[i * 3]      = ((val >> 16) & 0xFF) / 255.0f;
-                    floatValues[i * 3 + 1]  = ((val >> 8) & 0xFF) / 255.0f;
-                    floatValues[i * 3 + 2]  = (val & 0xFF) / 255.0f;
-                }
-
-                tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
-                tfii.feed(STYLE_NODE, styleVals, NUM_STYLES);
-                tfii.run(new String[] {OUTPUT_NODE}, true);
-                tfii.fetch(OUTPUT_NODE, floatValues);
-
-                for (int i = 0; i < intValues.length; ++i) 
-                {
-                  intValues[i] =
-                      0xFF000000
-                          | (((int) (floatValues[i * 3] * 255)) << 16)
-                          | (((int) (floatValues[i * 3 + 1] * 255)) << 8)
-                          | ((int) (floatValues[i * 3 + 2] * 255));
-                }
-
-                bitmap2.setPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
-                bitmap2.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                byte[] byteArray    = byteArrayOutputStream .toByteArray();
-                String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                JSONObject output   = new JSONObject();
-                output.put("out", base64_out);
-                callbackContext.success( output );
-
-            }catch(Exception e)
-            {
-                StringWriter errors = new StringWriter();
-                e.printStackTrace( new PrintWriter(errors) );
-                callbackContext.error( errors.toString() );
-            }
-
-            return true;
-        }
-        
-        return false;
+        });
     }
     
     public void load(String model)
