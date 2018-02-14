@@ -75,8 +75,8 @@ public class TFBridgeCordova extends CordovaPlugin
                         
                         JSONObject output   = new JSONObject();
                         output.put("styles", Arrays.toString(styles) );
-                        output.put("result1", Arrays.toString(img_data) );
-                        output.put("logs", logs);
+                        //output.put("result1", Arrays.toString(img_data) );
+                        //output.put("logs", logs);
                         
                         callbackContext.success( output );
                         
@@ -193,6 +193,6 @@ public class TFBridgeCordova extends CordovaPlugin
         tfii.run( new String[]{output_node}, true );              // Execute the output node's dependency sub-graph.
         tfii.fetch(output_node, img_data);                        // Copy the data from TensorFlow back into our array.
         
-        logs = tfii.getStatString().split("\n");
+        //logs = tfii.getStatString().split("\n");
     }
 }
