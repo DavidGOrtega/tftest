@@ -101,11 +101,11 @@ public class TFBridgeCordova extends CordovaPlugin
 
                 byte[] bytes_in     = Base64.decode(args.getString(0), Base64.DEFAULT);
                 Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
-                Bitmap bitmap2      = bitmap.copy( bitmap.getConfig, true );
 
                 float[] floatValues = new float[ bitmap.getWidth() * bitmap.getHeight() * 3 ];
                 int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
 
+                Bitmap bitmap2      = bitmap.copy( bitmap.getConfig(), true );
                 bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 
                 for (int i = 0; i < intValues.length; ++i) 
