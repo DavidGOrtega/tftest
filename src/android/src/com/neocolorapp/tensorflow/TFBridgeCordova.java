@@ -152,10 +152,23 @@ public class TFBridgeCordova extends CordovaPlugin
 
                     return true;
                 
-                }if ( action.equals("throw") ) 
+                }else if ( action.equals("throw") ) 
                 {
                     throw new JSONException("mother fucker");
+                
+                }else if ( action.equals("throw2") ) 
+                {
+                    try
+                    {
+                        throw new JSONException("mother fucker");
+                    }catch(Exception e)
+                    {
+                        StringWriter errors = new StringWriter();
+                        e.printStackTrace( new PrintWriter(errors) );
+                        callbackContext.error( errors.toString() );
+                    }
                 }
+                
                 
                 return false;
             }
