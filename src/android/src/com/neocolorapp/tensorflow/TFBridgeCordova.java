@@ -41,7 +41,7 @@ public class TFBridgeCordova extends CordovaPlugin
                 {
                     try
                     {
-                        this.load( args.getString(0) );
+                        load( args.getString(0) );
                         callbackContext.success("Model loaded successfully");
                         
                     }catch(Exception e)
@@ -70,7 +70,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             
                         String[] logs       = null;
                         
-                        this.stylize(img_data, img_width, img_height, styles, logs);
+                        stylize(img_data, img_width, img_height, styles, logs);
                         
                         JSONObject output   = new JSONObject();
                         output.put("styles", Arrays.toString(styles) );
@@ -168,11 +168,12 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( errors.toString() );
                     }
                 }
+
                 
-                
-                return false;
             }
         });
+        
+        return false;
     }
     
     public void load(String model)
