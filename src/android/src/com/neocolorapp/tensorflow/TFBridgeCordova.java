@@ -33,6 +33,9 @@ public class TFBridgeCordova extends CordovaPlugin
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException 
     {
+        if ( action.equals("load") || action.equals("stylize") || action.equals("stylize_64") || action.equals("throw") || action.equals("throw2")  ) 
+        {
+                    
         cordova.getActivity().runOnUiThread(new Runnable() 
         {
             public void run() 
@@ -48,8 +51,6 @@ public class TFBridgeCordova extends CordovaPlugin
                     {
                         callbackContext.error( e.getMessage() );
                     }
-                    
-                    return true;
                 
                 }else if ( action.equals("stylize") ) 
                 {
@@ -83,13 +84,9 @@ public class TFBridgeCordova extends CordovaPlugin
                     {
                         JSONObject output   = new JSONObject();
                         output.put("error", e.getMessage());
-                        output.put("img_data", img_data);
-                        output.put("styles", styles);
                         
                         callbackContext.error( output );
                     }
-                    
-                    return true;
                 
                 }else if ( action.equals("stylize_64") ) 
                 {       
@@ -149,8 +146,6 @@ public class TFBridgeCordova extends CordovaPlugin
                         e.printStackTrace( new PrintWriter(errors) );
                         callbackContext.error( errors.toString() );
                     }
-
-                    return true;
                 
                 }else if ( action.equals("throw") ) 
                 {
@@ -168,10 +163,11 @@ public class TFBridgeCordova extends CordovaPlugin
                         callbackContext.error( errors.toString() );
                     }
                 }
-
-                
             }
         });
+        
+            return true;
+        }
         
         return false;
     }
