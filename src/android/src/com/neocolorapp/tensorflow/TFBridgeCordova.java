@@ -56,7 +56,8 @@ public class TFBridgeCordova extends CordovaPlugin
                 {
                     try
                     {
-                        JSONArray image_arr = args.getJSONArray(0);
+                        String dat          = args.getString(0);
+                        JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
                         int img_width       = args.getInt(1);
                         int img_height      = args.getInt(2);
                         
@@ -64,12 +65,19 @@ public class TFBridgeCordova extends CordovaPlugin
                         for (int i = 0; i < image_arr.length(); i++)
                             img_data[i] = (float) image_arr.getDouble(i);
 
-                        JSONArray style_arr = args.getJSONArray(3);
+                       /*  JSONArray style_arr = args.getJSONArray(3);
                         float[] styles      = new float[ style_arr.length() ];   
                         for (int i = 0; i < style_arr.length(); i++)
                             styles[i] = (float) style_arr.getDouble(i);
                             
-                        String[] logs       = null;
+                        String[] logs       = null; */
+                        
+                        float[] styleVals   = new float[NUM_STYLES];
+                        for (int i = 0; i < NUM_STYLES; ++i) 
+                        {
+                            styleVals[i] = 1.0f / NUM_STYLES;
+                        }
+
                         
                         //stylize(img_data, img_width, img_height, styles, logs);
 
