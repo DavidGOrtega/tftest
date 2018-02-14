@@ -84,10 +84,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         
                     }catch(Exception e)
                     {
-                        JSONObject output   = new JSONObject();
-                        output.put("error", e.getMessage());
-                        
-                        callbackContext.error( output );
+                        callbackContext.error( e.getMessage() );
                     }
                 
                 }else if ( act.equals("stylize_64") ) 
@@ -156,7 +153,7 @@ public class TFBridgeCordova extends CordovaPlugin
                     
                     float number3 = number1 / number2;
                 
-                }else if ( action.equals("throw2") ) 
+                }else if ( act.equals("throw2") ) 
                 {
                     try
                     {
