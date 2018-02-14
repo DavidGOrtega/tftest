@@ -15,6 +15,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
@@ -140,7 +142,9 @@ public class TFBridgeCordova extends CordovaPlugin
 
             }catch(Exception e)
             {
-                callbackContext.error( e.printStackTrace() );
+                StringWriter errors = new StringWriter();
+                ex.printStackTrace( new PrintWriter(errors) );
+                callbackContext.error( errors.toString() );
             }
 
             return true;
