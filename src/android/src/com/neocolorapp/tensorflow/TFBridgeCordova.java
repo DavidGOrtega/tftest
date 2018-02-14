@@ -72,10 +72,10 @@ public class TFBridgeCordova extends CordovaPlugin
                             
                         String[] logs       = null; */
                         
-                        float[] styleVals   = new float[NUM_STYLES];
+                        float[] styles   = new float[NUM_STYLES];
                         for (int i = 0; i < NUM_STYLES; ++i) 
                         {
-                            styleVals[i] = 1.0f / NUM_STYLES;
+                            styles[i] = 1.0f / NUM_STYLES;
                         }
 
                         
