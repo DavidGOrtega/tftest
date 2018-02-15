@@ -1,5 +1,7 @@
 package com.neocolorapp.tensorflow;
 
+import android.os.SystemClock;
+
 import java.util.Arrays;
 
 import org.apache.cordova.CordovaPlugin;
@@ -8,7 +10,6 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-
 
 import android.util.Base64;
 import android.graphics.Bitmap;
