@@ -76,6 +76,56 @@ public class TFBridgeCordova extends CordovaPlugin
                             callbackContext.success( output );
                         */
                         
+                        if ( action.equals("style_transfer") ) 
+                        {  
+                            final String INPUT_NODE  = "input_image";
+                            final String OUTPUT_NODE = "output_image";
+                            
+                            final String model  = args.getString(0);
+                            final String input  = args.getString(1);
+
+                            byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
+                            Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
+                            bitmap              = bitmap.copy( bitmap.getConfig(), true );
+
+                            int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
+                            bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                            float[] floatValues = new float[ bitmap.getWidth() * bitmap.getHeight() * 3 ];
+                            for (int i = 0; i < intValues.length; ++i) 
+                            {
+                                final int val           = intValues[i];
+                                floatValues[i * 3]      = ((val >> 16) & 0xFF) / 255.0f;
+                                floatValues[i * 3 + 1]  = ((val >> 8) & 0xFF) / 255.0f;
+                                floatValues[i * 3 + 2]  = (val & 0xFF) / 255.0f;
+                            }
+
+                            TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
+                            tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
+                            tfii.run(new String[] {OUTPUT_NODE}, true);
+                            tfii.fetch(OUTPUT_NODE, floatValues);
+
+                            for (int i = 0; i < intValues.length; ++i) 
+                            {
+                                intValues[i] =
+                                    0xFF000000
+                                    | (((int) (floatValues[i * 3] * 255)) << 16)
+                                    | (((int) (floatValues[i * 3 + 1] * 255)) << 8)
+                                    | ((int) (floatValues[i * 3 + 2] * 255));
+                            }
+
+                            bitmap.setPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                            byte[] byteArray    = byteArrayOutputStream .toByteArray();
+                            String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                            JSONObject output   = new JSONObject();
+                            output.put("out", base64_out);
+                            callbackContext.success( output );
+                        }
+                        
                         //https://arxiv.org/abs/1610.07629 A Learned Representation For Artistic Style
                         if ( action.equals("stylize") ) 
                         {       
