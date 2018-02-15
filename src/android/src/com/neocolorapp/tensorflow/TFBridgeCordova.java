@@ -38,7 +38,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         
                         if ( action.equals("load") ) 
                         {
-                            tfii = new TensorFlowInferenceInterface( this.cordova.getActivity().getAssets(), args.getString(0) );
+                            tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), args.getString(0) );
                             callbackContext.success("Model loaded successfully");
                         }
                         
