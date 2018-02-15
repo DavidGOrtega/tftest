@@ -85,7 +85,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             
                             final String model  = args.getString(0);
                             final String input  = args.getString(1);
-                            JSONArray styles_   = args.getJSONArray(2);
+                            //JSONArray styles_   = args.getJSONArray(2);
 
                             byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
                             Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
@@ -103,9 +103,15 @@ public class TFBridgeCordova extends CordovaPlugin
                                 floatValues[i * 3 + 2]  = (val & 0xFF) / 255.0f;
                             }
 
+                            /*
                             float[] styles      = new float[ styles_.length() ];   
                             for (int i = 0; i < styles_.length(); i++)
                                 styles[i] = (float) styles_.getDouble(i);
+                            */
+                            
+                            float[] styles   = new float[26];
+                            for (int i = 0; i < 26; ++i) 
+                                styles[i] = 1.0f / NUM_STYLES;
 
                             TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
@@ -125,7 +131,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             bitmap.setPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
-                            bitmap2.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                             byte[] byteArray    = byteArrayOutputStream .toByteArray();
                             String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
