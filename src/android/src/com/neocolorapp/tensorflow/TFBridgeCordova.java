@@ -27,7 +27,7 @@ public class TFBridgeCordova extends CordovaPlugin
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
     {
-        if ( action.equals("load") || action.equals("stylize")  ) 
+        if ( action.equals("style_transfer") || action.equals("stylize")  ) 
         {
             cordova.getThreadPool().execute(new Runnable()
             {
@@ -35,14 +35,14 @@ public class TFBridgeCordova extends CordovaPlugin
                 {
                     try
                     {
-                        
+                        /*
                         if ( action.equals("load") ) 
                         {
                             tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), args.getString(0) );
                             callbackContext.success("Model loaded successfully");
                         }
                         
-                        /*else if ( action.equals("stylize_deprecated") ) 
+                        else if ( action.equals("stylize_deprecated") ) 
                         {
                             String dat          = args.getString(0);
                             JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
@@ -137,8 +137,9 @@ public class TFBridgeCordova extends CordovaPlugin
                             final String input  = args.getString(1);
                             JSONArray styles_   = args.getJSONArray(2);
 
-                            byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
-                            Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
+                            Bitmap bMap           = BitmapFactory.decodeFile(input);
+                            //byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
+                            //Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
                             bitmap              = bitmap.copy( bitmap.getConfig(), true );
 
                             int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
@@ -157,7 +158,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             for (int i = 0; i < styles_.length(); i++)
                                 styles[i] = (float) styles_.getDouble(i);
 
-                            //TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
+                            TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
                             tfii.feed(STYLE_NODE, styles, styles.length);
                             tfii.run(new String[] {OUTPUT_NODE}, true);
