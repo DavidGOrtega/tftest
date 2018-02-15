@@ -149,6 +149,8 @@ public class TFBridgeCordova extends CordovaPlugin
         return false;
     }
     
+    
+    /*
     public void load(String model)
     {
         tfii = new TensorFlowInferenceInterface( this.cordova.getActivity().getAssets(), model );
@@ -169,4 +171,5 @@ public class TFBridgeCordova extends CordovaPlugin
         
         //logs = tfii.getStatString().split("\n");
     }
+    */
 }
