@@ -22,7 +22,7 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class TFBridgeCordova extends CordovaPlugin 
 {      
-    private TensorFlowInferenceInterface tfii;
+    //private TensorFlowInferenceInterface tfii;
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
@@ -111,7 +111,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             for (int i = 0; i < styles_.length(); i++)
                                 styles[i] = (float) styles_.getDouble(i);
 
-                            TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( this.cordova.getActivity().getAssets(), model );
+                            TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
                             tfii.feed(STYLE_NODE, styles, styles.length);
                             tfii.run(new String[] {OUTPUT_NODE}, true);
