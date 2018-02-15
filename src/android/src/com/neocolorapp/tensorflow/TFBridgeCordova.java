@@ -40,6 +40,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             load( args.getString(0) );
                             callbackContext.success("Model loaded successfully");
                         
+                        /*
                         }else if ( action.equals("stylize_deprecated") ) 
                         {
                             String dat          = args.getString(0);
@@ -51,19 +52,12 @@ public class TFBridgeCordova extends CordovaPlugin
                             for (int i = 0; i < image_arr.length(); i++)
                                 img_data[i] = (float) image_arr.getDouble(i);
 
-                           /*  JSONArray style_arr = args.getJSONArray(3);
+                            JSONArray style_arr = args.getJSONArray(3);
                             float[] styles      = new float[ style_arr.length() ];   
                             for (int i = 0; i < style_arr.length(); i++)
                                 styles[i] = (float) style_arr.getDouble(i);
                                 
-                            String[] logs       = null; */
-                            
-                            float[] styles   = new float[NUM_STYLES];
-                            for (int i = 0; i < NUM_STYLES; ++i) 
-                            {
-                                styles[i] = 1.0f / NUM_STYLES;
-                            }
-
+                            String[] logs       = null;
                             
                             //stylize(img_data, img_width, img_height, styles, logs);
 
@@ -79,7 +73,8 @@ public class TFBridgeCordova extends CordovaPlugin
                             //output.put("logs", logs);
                             
                             callbackContext.success( output );
-
+                        */
+                        
                         //https://arxiv.org/abs/1610.07629 A Learned Representation For Artistic Style
                         }else if ( action.equals("stylize") ) 
                         {       
