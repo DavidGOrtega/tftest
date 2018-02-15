@@ -85,7 +85,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             
                             final String model  = args.getString(0);
                             final String input  = args.getString(1);
-                            //JSONArray styles_   = args.getJSONArray(2);
+                            JSONArray styles_   = args.getJSONArray(2);
 
                             byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
                             Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
