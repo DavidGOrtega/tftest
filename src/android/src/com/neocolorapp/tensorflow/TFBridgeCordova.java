@@ -35,12 +35,13 @@ public class TFBridgeCordova extends CordovaPlugin
                 {
                     try
                     {
+                        /*
                         if ( action.equals("load") ) 
                         {
                             load( args.getString(0) );
                             callbackContext.success("Model loaded successfully");
                         
-                        /*
+                        
                         }else if ( action.equals("stylize_deprecated") ) 
                         {
                             String dat          = args.getString(0);
@@ -76,7 +77,7 @@ public class TFBridgeCordova extends CordovaPlugin
                         */
                         
                         //https://arxiv.org/abs/1610.07629 A Learned Representation For Artistic Style
-                        }else if ( action.equals("stylize") ) 
+                        if ( action.equals("stylize") ) 
                         {       
                             final String INPUT_NODE  = "input";
                             final String STYLE_NODE  = "style_num";
