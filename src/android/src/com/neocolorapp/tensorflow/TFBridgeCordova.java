@@ -22,7 +22,7 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class TFBridgeCordova extends CordovaPlugin 
 {      
-    //private TensorFlowInferenceInterface tfii;
+    private TensorFlowInferenceInterface tfii;
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
@@ -35,14 +35,14 @@ public class TFBridgeCordova extends CordovaPlugin
                 {
                     try
                     {
-                        /*
+                        
                         if ( action.equals("load") ) 
                         {
-                            load( args.getString(0) );
+                            tfii = new TensorFlowInferenceInterface( this.cordova.getActivity().getAssets(), args.getString(0) );
                             callbackContext.success("Model loaded successfully");
+                        }
                         
-                        
-                        }else if ( action.equals("stylize_deprecated") ) 
+                        /*else if ( action.equals("stylize_deprecated") ) 
                         {
                             String dat          = args.getString(0);
                             JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
@@ -113,7 +113,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             for (int i = 0; i < 26; ++i) 
                                 styles[i] = 1.0f / 26;
 
-                            TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
+                            //TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
                             tfii.feed(STYLE_NODE, styles, styles.length);
                             tfii.run(new String[] {OUTPUT_NODE}, true);
