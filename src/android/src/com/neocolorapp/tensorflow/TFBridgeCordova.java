@@ -111,7 +111,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             
                             float[] styles   = new float[26];
                             for (int i = 0; i < 26; ++i) 
-                                styles[i] = 1.0f / NUM_STYLES;
+                                styles[i] = 1.0f / 26;
 
                             TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
