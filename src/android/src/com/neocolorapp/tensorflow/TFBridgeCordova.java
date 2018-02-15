@@ -100,10 +100,12 @@ public class TFBridgeCordova extends CordovaPlugin
                                 floatValues[i * 3 + 2]  = (val & 0xFF) / 255.0f;
                             }
 
+                            long tf_ms  = SystemClock.uptimeMillis();
                             TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
                             tfii.run(new String[] {OUTPUT_NODE}, true);
                             tfii.fetch(OUTPUT_NODE, floatValues);
+                            tf_ms       = SystemClock.uptimeMillis() - tf_ms;
 
                             for (int i = 0; i < intValues.length; ++i) 
                             {
@@ -122,6 +124,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
                             JSONObject output   = new JSONObject();
+                            output.put("tf_ms", tf_ms);
                             output.put("out", base64_out);
                             callbackContext.success( output );
                         }
@@ -158,11 +161,13 @@ public class TFBridgeCordova extends CordovaPlugin
                             for (int i = 0; i < styles_.length(); i++)
                                 styles[i] = (float) styles_.getDouble(i);
 
+                            long tf_ms  = SystemClock.uptimeMillis();
                             TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
                             tfii.feed(STYLE_NODE, styles, styles.length);
                             tfii.run(new String[] {OUTPUT_NODE}, true);
                             tfii.fetch(OUTPUT_NODE, floatValues);
+                            tf_ms       = SystemClock.uptimeMillis() - tf_ms;
 
                             for (int i = 0; i < intValues.length; ++i) 
                             {
@@ -181,6 +186,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             String base64_out   = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
                             JSONObject output   = new JSONObject();
+                            output.put("tf_ms", tf_ms);
                             output.put("out", base64_out);
                             callbackContext.success( output );
                         }
