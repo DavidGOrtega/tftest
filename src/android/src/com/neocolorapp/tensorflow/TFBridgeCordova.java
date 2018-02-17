@@ -4,6 +4,7 @@ import android.os.SystemClock;
 
 import java.lang.Exception;
 import java.util.Arrays;
+import java.io.InputStream;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
@@ -201,7 +202,7 @@ public class TFBridgeCordova extends CordovaPlugin
                     }
                 }
                 
-                public static Bitmap getBitmapFromAsset(String filePath) throws Exception
+                public Bitmap getBitmapFromAsset(String filePath) throws Exception
                 {
                     InputStream istr    = cordova.getActivity().getAssets().open(filePath);
                     Bitmap bitmap       = BitmapFactory.decodeStream(istr);;
