@@ -172,16 +172,17 @@ public class TFBridgeCordova extends CordovaPlugin
                         
                         if ( action.equals("stylize_raw") ) 
                         {
-                            String dat          = args.getString(0);
-                            JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
-                            int img_width       = args.getInt(1);
-                            int img_height      = args.getInt(2);
+                            String model        = args.getString(0);
+                            int img_width       = args.getInt(2);
+                            int img_height      = args.getInt(3);
+                            JSONArray style_arr = args.getJSONArray(4);
                             
+                            String dat          = args.getString(1);
+                            JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
                             float[] img_data    = new float[ image_arr.length() ]; 
                             for (int i = 0; i < image_arr.length(); i++)
                                 img_data[i] = (float) image_arr.getDouble(i);
 
-                            JSONArray style_arr = args.getJSONArray(3);
                             float[] styles      = new float[ style_arr.length() ];   
                             for (int i = 0; i < style_arr.length(); i++)
                                 styles[i] = (float) style_arr.getDouble(i);
