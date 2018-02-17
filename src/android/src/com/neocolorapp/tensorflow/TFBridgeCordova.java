@@ -114,7 +114,7 @@ public class TFBridgeCordova extends CordovaPlugin
 
                             Bitmap bitmap;
                             
-                            if( args.getString(3).equals('base64') )
+                            if( args.getString(3).equals("base64") )
                             {
                                 byte[] bytes_in = Base64.decode(input, Base64.DEFAULT);
                                 bitmap          = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
