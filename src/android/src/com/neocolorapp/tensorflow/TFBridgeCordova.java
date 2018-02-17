@@ -45,38 +45,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             callbackContext.success("Model loaded successfully");
                         }
                         
-                        else if ( action.equals("stylize_deprecated") ) 
-                        {
-                            String dat          = args.getString(0);
-                            JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
-                            int img_width       = args.getInt(1);
-                            int img_height      = args.getInt(2);
-                            
-                            float[] img_data    = new float[ image_arr.length() ]; 
-                            for (int i = 0; i < image_arr.length(); i++)
-                                img_data[i] = (float) image_arr.getDouble(i);
-
-                            JSONArray style_arr = args.getJSONArray(3);
-                            float[] styles      = new float[ style_arr.length() ];   
-                            for (int i = 0; i < style_arr.length(); i++)
-                                styles[i] = (float) style_arr.getDouble(i);
-                                
-                            String[] logs       = null;
-                            
-                            //stylize(img_data, img_width, img_height, styles, logs);
-
-                            tfii.feed( "input", img_data, 1, img_width, img_height, 3 );
-                            tfii.feed( "style_num", styles, styles.length );
-                            tfii.run( new String[]{"transformer/expand/conv3/conv/Sigmoid"}, true );              // Execute the output node's dependency sub-graph.
-                            tfii.fetch("transformer/expand/conv3/conv/Sigmoid", img_data);                        // Copy the data from TensorFlow back into our array.
-                            
-                            JSONObject output   = new JSONObject();
-                            output.put("success", true);
-                            //output.put("styles", Arrays.toString(styles) );
-                            //output.put("result1", Arrays.toString(img_data) );
-                            //output.put("logs", logs);
-                            
-                            callbackContext.success( output );
+                        else 
                         */
                         
                         if ( action.equals("style_transfer") ) 
@@ -143,10 +112,17 @@ public class TFBridgeCordova extends CordovaPlugin
                             final String input  = args.getString(1);
                             JSONArray styles_   = args.getJSONArray(2);
 
-                            Bitmap bitmap         = getBitmapFromAsset(input);
-                            //byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
-                            //Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
-                            bitmap              = bitmap.copy( bitmap.getConfig(), true );
+                            Bitmap bitmap;
+                            
+                            if( args.getString(3).equals('base64') )
+                            {
+                                byte[] bytes_in = Base64.decode(input, Base64.DEFAULT);
+                                bitmap          = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
+                                bitmap          = bitmap.copy( bitmap.getConfig(), true );
+                            
+                            }else
+                                bitmap          = getBitmapFromAsset(input);
+                            
 
                             int[] intValues     = new int[ bitmap.getWidth() * bitmap.getHeight() ];
                             bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -168,7 +144,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
                             tfii.feed(INPUT_NODE, floatValues, 1, bitmap.getWidth(), bitmap.getHeight(), 3);
                             tfii.feed(STYLE_NODE, styles, styles.length);
-                            tfii.run(new String[] {OUTPUT_NODE}, true);
+                            tfii.run(new String[] {OUTPUT_NODE}, false);
                             tfii.fetch(OUTPUT_NODE, floatValues);
                             tf_ms       = SystemClock.uptimeMillis() - tf_ms;
 
@@ -190,7 +166,38 @@ public class TFBridgeCordova extends CordovaPlugin
 
                             JSONObject output   = new JSONObject();
                             output.put("tf_ms", tf_ms);
-                            output.put("out", base64_out);
+                            //output.put("out", base64_out);
+                            callbackContext.success( output );
+                        }
+                        
+                        if ( action.equals("stylize_raw") ) 
+                        {
+                            String dat          = args.getString(0);
+                            JSONArray image_arr = new JSONArray(dat); //args.getJSONArray(0);
+                            int img_width       = args.getInt(1);
+                            int img_height      = args.getInt(2);
+                            
+                            float[] img_data    = new float[ image_arr.length() ]; 
+                            for (int i = 0; i < image_arr.length(); i++)
+                                img_data[i] = (float) image_arr.getDouble(i);
+
+                            JSONArray style_arr = args.getJSONArray(3);
+                            float[] styles      = new float[ style_arr.length() ];   
+                            for (int i = 0; i < style_arr.length(); i++)
+                                styles[i] = (float) style_arr.getDouble(i);
+
+                            long tf_ms  = SystemClock.uptimeMillis();
+                            TensorFlowInferenceInterface tfii = new TensorFlowInferenceInterface( cordova.getActivity().getAssets(), model );
+                            tfii.feed( "input", img_data, 1, img_width, img_height, 3 );
+                            tfii.feed( "style_num", styles, styles.length );
+                            tfii.run( new String[]{"transformer/expand/conv3/conv/Sigmoid"}, false );              // Execute the output node's dependency sub-graph.
+                            tfii.fetch("transformer/expand/conv3/conv/Sigmoid", img_data);                        // Copy the data from TensorFlow back into our array.
+                            tf_ms       = SystemClock.uptimeMillis() - tf_ms;
+                            
+                            JSONObject output   = new JSONObject();
+                            output.put("tf_ms", tf_ms);
+                            //output.put("out", Arrays.toString(img_data) );
+
                             callbackContext.success( output );
                         }
                     
