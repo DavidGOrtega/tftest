@@ -2,6 +2,7 @@ package com.neocolorapp.tensorflow;
 
 import android.os.SystemClock;
 
+import java.lang.Exception;
 import java.util.Arrays;
 
 import org.apache.cordova.CordovaPlugin;
@@ -141,7 +142,7 @@ public class TFBridgeCordova extends CordovaPlugin
                             final String input  = args.getString(1);
                             JSONArray styles_   = args.getJSONArray(2);
 
-                            Bitmap bitmap         = BitmapFactory.decodeFile(input);
+                            Bitmap bitmap         = getBitmapFromAsset(input);
                             //byte[] bytes_in     = Base64.decode(input, Base64.DEFAULT);
                             //Bitmap bitmap       = BitmapFactory.decodeByteArray(bytes_in, 0, bytes_in.length); 
                             bitmap              = bitmap.copy( bitmap.getConfig(), true );
@@ -198,6 +199,14 @@ public class TFBridgeCordova extends CordovaPlugin
                         e.printStackTrace( new PrintWriter(errors) );
                         callbackContext.error( errors.toString() );
                     }
+                }
+                
+                public static Bitmap getBitmapFromAsset(String filePath) throws Exception
+                {
+                    InputStream istr    = cordova.getActivity().getAssets().open(filePath);
+                    Bitmap bitmap       = BitmapFactory.decodeStream(istr);;
+
+                    return bitmap;
                 }
             });
         
