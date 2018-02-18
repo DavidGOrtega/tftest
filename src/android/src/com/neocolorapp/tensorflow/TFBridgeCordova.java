@@ -30,7 +30,7 @@ public class TFBridgeCordova extends CordovaPlugin
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException 
     {
-        if ( action.equals("style_transfer") || action.equals("stylize")  ) 
+        if ( action.equals("style_transfer") || action.equals("stylize") || action.equals("stylize_raw")  ) 
         {
             cordova.getThreadPool().execute(new Runnable()
             {
